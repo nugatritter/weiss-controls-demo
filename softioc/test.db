@@ -1,0 +1,77 @@
+# Testvariablen für WEISS (Channel Access und PV Access)
+
+# Zähler 0..99, zählt mit 2 Hz hoch
+record(calc, "WEISS:TEST:COUNTER") {
+    field(DESC, "Zaehler 0..99")
+    field(SCAN, ".5 second")
+    field(INPA, "WEISS:TEST:COUNTER NPP")
+    field(CALC, "A>=99?0:A+1")
+    field(HOPR, "99")
+    field(LOPR, "0")
+}
+
+# Sinus 0..100, folgt dem Zähler (Periode 100 Schritte)
+record(calc, "WEISS:TEST:SINE") {
+    field(DESC, "Sinus 0..100")
+    field(SCAN, ".5 second")
+    field(INPA, "WEISS:TEST:COUNTER NPP")
+    field(CALC, "50+50*SIN(A*0.0628)")
+    field(PREC, "2")
+    field(EGU,  "%")
+    field(HOPR, "100")
+    field(LOPR, "0")
+}
+
+# Schreibbarer Sollwert, der Istwert folgt sofort
+record(ao, "WEISS:TEST:SETPOINT") {
+    field(DESC, "Sollwert (schreibbar)")
+    field(VAL,  "10")
+    field(PINI, "YES")
+    field(DRVL, "0")
+    field(DRVH, "100")
+    field(HOPR, "100")
+    field(LOPR, "0")
+    field(PREC, "2")
+    field(EGU,  "V")
+}
+
+record(calc, "WEISS:TEST:READBACK") {
+    field(DESC, "Istwert zum Sollwert")
+    field(INPA, "WEISS:TEST:SETPOINT CP")
+    field(CALC, "A")
+    field(PREC, "2")
+    field(EGU,  "V")
+    field(HOPR, "100")
+    field(LOPR, "0")
+}
+
+# Schalter und Statusanzeige
+record(bo, "WEISS:TEST:SWITCH") {
+    field(DESC, "Schalter (schreibbar)")
+    field(ZNAM, "Aus")
+    field(ONAM, "Ein")
+    field(PINI, "YES")
+    field(VAL,  "0")
+}
+
+record(bi, "WEISS:TEST:STATUS") {
+    field(DESC, "Status zum Schalter")
+    field(INP,  "WEISS:TEST:SWITCH CP")
+    field(ZNAM, "Aus")
+    field(ONAM, "Ein")
+}
+
+# Text, schreibbar
+record(stringout, "WEISS:TEST:MESSAGE") {
+    field(DESC, "Nachricht (schreibbar)")
+    field(VAL,  "Hallo WEISS")
+    field(PINI, "YES")
+}
+
+# Array, wird beim Start in st.cmd mit Quadratzahlen gefüllt
+record(waveform, "WEISS:TEST:WAVE") {
+    field(DESC, "Array mit 10 Werten")
+    field(FTVL, "DOUBLE")
+    field(NELM, "10")
+    field(NORD, "10")
+}

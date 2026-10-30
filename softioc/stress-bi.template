@@ -1,0 +1,13 @@
+# Binärkanal des Stresstests (geladen über stress.substitutions)
+# Makros: P = PV-Präfix, S = Sektor, N = Kanal, K = Index, CALC = Ausdruck, NAME = Beschreibung
+# Lauflicht: "A%10=B" (genau eine LED pro Zeile an), Binärzähler: "(A>>B)&1" (Bit B des Takts).
+# MDEL -1: sendet bei jedem Takt ein Update, auch ohne Wertänderung.
+record(calc, "$(P)S$(S):B$(N)") {
+    field(DESC, "Sektor $(S) $(NAME)")
+    field(SCAN, "Event")
+    field(EVNT, "stress")
+    field(INPA, "$(P)TICKS NPP")
+    field(INPB, "$(K)")
+    field(CALC, "$(CALC)")
+    field(MDEL, "-1")
+}

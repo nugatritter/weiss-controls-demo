@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beispieldisplay für die Test-SoftIOC (softioc/test.db). Zum Import in WEISS:
+     Editor → Import → From CSS/Phoebus. Die IOC muss laufen, damit Werte erscheinen. -->
+<display version="2.0.0">
+  <name>WEISS Test-IOC</name>
+  <width>640</width>
+  <height>420</height>
+
+  <widget type="label" version="2.0.0">
+    <name>Titel</name>
+    <text>WEISS Test-IOC</text>
+    <x>20</x>
+    <y>16</y>
+    <width>600</width>
+    <height>32</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Zaehler</name>
+    <text>Zähler (0..99, 2 Hz)</text>
+    <x>20</x>
+    <y>64</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Zaehler</name>
+    <pv_name>WEISS:TEST:COUNTER</pv_name>
+    <x>260</x>
+    <y>64</y>
+    <width>160</width>
+    <height>24</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Sinus</name>
+    <text>Sinus (0..100)</text>
+    <x>20</x>
+    <y>100</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Sinus</name>
+    <pv_name>WEISS:TEST:SINE</pv_name>
+    <x>260</x>
+    <y>100</y>
+    <width>160</width>
+    <height>24</height>
+  </widget>
+  <widget type="progressbar" version="2.0.0">
+    <name>Sinus Balken</name>
+    <pv_name>WEISS:TEST:SINE</pv_name>
+    <x>440</x>
+    <y>100</y>
+    <width>180</width>
+    <height>24</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Sollwert</name>
+    <text>Sollwert (schreibbar, V)</text>
+    <x>20</x>
+    <y>148</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="textentry" version="2.0.0">
+    <name>Sollwert</name>
+    <pv_name>WEISS:TEST:SETPOINT</pv_name>
+    <x>260</x>
+    <y>148</y>
+    <width>160</width>
+    <height>24</height>
+  </widget>
+  <widget type="scaledslider" version="2.0.0">
+    <name>Sollwert Regler</name>
+    <pv_name>WEISS:TEST:SETPOINT</pv_name>
+    <x>440</x>
+    <y>148</y>
+    <width>180</width>
+    <height>24</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Istwert</name>
+    <text>Istwert (folgt dem Sollwert)</text>
+    <x>20</x>
+    <y>196</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Istwert</name>
+    <pv_name>WEISS:TEST:READBACK</pv_name>
+    <x>260</x>
+    <y>196</y>
+    <width>160</width>
+    <height>24</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Schalter</name>
+    <text>Schalter (schreibbar)</text>
+    <x>20</x>
+    <y>244</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="bool_button" version="2.0.0">
+    <name>Schalter</name>
+    <pv_name>WEISS:TEST:SWITCH</pv_name>
+    <on_label>Ein</on_label>
+    <off_label>Aus</off_label>
+    <x>260</x>
+    <y>244</y>
+    <width>160</width>
+    <height>28</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Status</name>
+    <text>Status (folgt dem Schalter)</text>
+    <x>20</x>
+    <y>292</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>Status LED</name>
+    <pv_name>WEISS:TEST:STATUS</pv_name>
+    <x>260</x>
+    <y>292</y>
+    <width>24</width>
+    <height>24</height>
+  </widget>
+
+  <widget type="label" version="2.0.0">
+    <name>Lbl Nachricht</name>
+    <text>Nachricht (schreibbar)</text>
+    <x>20</x>
+    <y>340</y>
+    <width>220</width>
+    <height>24</height>
+  </widget>
+  <widget type="textentry" version="2.0.0">
+    <name>Nachricht</name>
+    <pv_name>WEISS:TEST:MESSAGE</pv_name>
+    <x>260</x>
+    <y>340</y>
+    <width>360</width>
+    <height>24</height>
+  </widget>
+</display>

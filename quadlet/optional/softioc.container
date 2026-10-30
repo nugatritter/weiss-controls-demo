@@ -1,0 +1,19 @@
+[Unit]
+Description=WEISS Test-SoftIOC (optional)
+After=network-online.target
+Wants=network-online.target
+# Vor weiss-epicsws starten, damit die PVs beim Start gefunden werden.
+Before=weiss-epicsws.service
+
+[Container]
+Image=localhost/weiss-softioc:latest
+ContainerName=weiss-softioc
+# Host-Netzwerk: wie weiss-epicsws, damit CA über localhost/Broadcast funktioniert.
+Network=host
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

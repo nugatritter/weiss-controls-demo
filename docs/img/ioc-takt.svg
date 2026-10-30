@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" width="960" height="340" role="img" aria-label="Takt-Mechanismus in der Test-SoftIOC" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title>Takt-Mechanismus in der Test-SoftIOC</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6c757d"/></marker></defs>
+<rect width="960" height="340" rx="12" fill="#ffffff" stroke="#ced4da"/>
+<text x="30" y="36" font-size="18" fill="#023e7d" text-anchor="start" font-weight="700">Wie die IOC 1000 Kanäle gleichzeitig auslöst</text>
+<text x="30" y="56" font-size="12.5" fill="#6c757d" text-anchor="start" font-weight="400">Ein Takt-Record erzeugt ein Event, alle Kanäle scannen auf dieses Event und senden jedes Mal (MDEL = -1).</text>
+<rect x="30" y="90" width="170" height="100" rx="10" fill="#e8590c" fill-opacity="0.07" stroke="#e8590c" stroke-width="1.5"/>
+<rect x="30" y="90" width="170" height="30" rx="10" fill="#e8590c"/>
+<rect x="30" y="110" width="170" height="10" fill="#e8590c"/>
+<text x="115.0" y="110" font-size="14" fill="#fff" text-anchor="middle" font-weight="600">RATE (mbbo)</text>
+<text x="115.0" y="142" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">schreibbar</text>
+<text x="115.0" y="161" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">Pause … 10 Hz</text>
+<rect x="255" y="90" width="170" height="100" rx="10" fill="#0466c8" fill-opacity="0.07" stroke="#0466c8" stroke-width="1.5"/>
+<rect x="255" y="90" width="170" height="30" rx="10" fill="#0466c8"/>
+<rect x="255" y="110" width="170" height="10" fill="#0466c8"/>
+<text x="340.0" y="110" font-size="14" fill="#fff" text-anchor="middle" font-weight="600">TICKS (calc)</text>
+<text x="340.0" y="142" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">A+1, SCAN aus RATE</text>
+<text x="340.0" y="161" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">Takt-Zähler</text>
+<rect x="480" y="90" width="170" height="100" rx="10" fill="#0466c8" fill-opacity="0.07" stroke="#0466c8" stroke-width="1.5"/>
+<rect x="480" y="90" width="170" height="30" rx="10" fill="#0466c8"/>
+<rect x="480" y="110" width="170" height="10" fill="#0466c8"/>
+<text x="565.0" y="110" font-size="14" fill="#fff" text-anchor="middle" font-weight="600">TICK (event)</text>
+<text x="565.0" y="142" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">Ereignis »stress«</text>
+<text x="565.0" y="161" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">über FLNK</text>
+<rect x="705" y="90" width="225" height="100" rx="10" fill="#2b8a3e" fill-opacity="0.07" stroke="#2b8a3e" stroke-width="1.5"/>
+<rect x="705" y="90" width="225" height="30" rx="10" fill="#2b8a3e"/>
+<rect x="705" y="110" width="225" height="10" fill="#2b8a3e"/>
+<text x="817.5" y="110" font-size="14" fill="#fff" text-anchor="middle" font-weight="600">1000 Kanäle</text>
+<text x="817.5" y="142" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">SCAN = Event, EVNT = stress</text>
+<text x="817.5" y="161" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">800 Analog + 200 Binär</text>
+<line x1="202" y1="140" x2="253" y2="140" stroke="#6c757d" stroke-width="2" marker-end="url(#a)"/>
+<text x="227.5" y="132.0" font-size="11.5" fill="#6c757d" text-anchor="middle" font-weight="400">setzt SCAN</text>
+<line x1="427" y1="140" x2="478" y2="140" stroke="#6c757d" stroke-width="2" marker-end="url(#a)"/>
+<text x="452.5" y="132.0" font-size="11.5" fill="#6c757d" text-anchor="middle" font-weight="400">FLNK</text>
+<line x1="652" y1="140" x2="703" y2="140" stroke="#6c757d" stroke-width="2" marker-end="url(#a)"/>
+<text x="677.5" y="132.0" font-size="11.5" fill="#6c757d" text-anchor="middle" font-weight="400">löst aus</text>
+<rect x="30" y="215" width="170" height="100" rx="10" fill="#e8590c" fill-opacity="0.07" stroke="#e8590c" stroke-width="1.5"/>
+<rect x="30" y="215" width="170" height="30" rx="10" fill="#e8590c"/>
+<rect x="30" y="235" width="170" height="10" fill="#e8590c"/>
+<text x="115.0" y="235" font-size="14" fill="#fff" text-anchor="middle" font-weight="600">AMPL / NOISE</text>
+<text x="115.0" y="267" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">ao, schreibbar</text>
+<text x="115.0" y="286" font-size="12.5" fill="#212529" text-anchor="middle" font-weight="400">wirken auf alle Analogkanäle</text>
+<text x="255" y="232" font-size="12.5" fill="#212529" text-anchor="start" font-weight="400">Analog:  50 + AMPL·sin(Takt·2π/40 + Phase) + NOISE·Zufall</text>
+<text x="255" y="255" font-size="12.5" fill="#212529" text-anchor="start" font-weight="400">Lauflicht:  Takt mod 10 = k   (genau eine LED an)</text>
+<text x="255" y="278" font-size="12.5" fill="#212529" text-anchor="start" font-weight="400">Zähler:  (Takt >> k) &amp; 1   (Bit k des Takts)</text>
+<text x="255" y="301" font-size="12.5" fill="#6c757d" text-anchor="start" font-weight="400">Phase:  verschiebt sich je Kachel, die Welle läuft diagonal über alle Sektoren</text>
+</svg>

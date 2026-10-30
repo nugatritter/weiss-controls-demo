@@ -1,0 +1,23 @@
+[Unit]
+Description=WEISS web frontend (nginx)
+Requires=weiss-api.service weiss-epicsws.service
+After=weiss-api.service weiss-epicsws.service
+
+[Container]
+Image=localhost/weiss:latest
+ContainerName=weiss
+Network=weiss.network
+# Port 80 ist Pflicht (CORS der API). Rootless braucht dafür
+# net.ipv4.ip_unprivileged_port_start=80, siehe README.
+PublishPort=80:8081
+# weiss-epicsws läuft im Host-Netzwerk und ist über das Gateway erreichbar.
+PodmanArgs=--add-host=weiss-epicsws:host-gateway
+Environment=NODE_ENV=production
+EnvironmentFile=%h/.config/weiss/weiss.env
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

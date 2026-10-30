@@ -1,0 +1,21 @@
+[Unit]
+Description=WEISS API
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=localhost/weiss-api:latest
+ContainerName=weiss-api
+Network=weiss.network
+PublishPort=8000:8000
+Volume=weiss-storage.volume:/app/storage
+Volume=%h/.config/weiss/roles.toml:/config/roles.toml:ro
+Environment=ROLES_CONFIG_PATH=/config/roles.toml
+EnvironmentFile=%h/.config/weiss/weiss.env
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

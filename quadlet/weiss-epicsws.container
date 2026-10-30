@@ -1,0 +1,19 @@
+[Unit]
+Description=WEISS EPICS WebSocket bridge
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=localhost/weiss-epicsws:latest
+ContainerName=weiss-epicsws
+# Host-Netzwerk: nötig für EPICS Channel Access (UDP-Suche/Broadcast, TCP 5064).
+# Der WebSocket-Dienst lauscht auf Host-Port 8080.
+Network=host
+EnvironmentFile=%h/.config/weiss/weiss.env
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

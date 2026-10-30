@@ -1,0 +1,79 @@
+# Steuerung des Stresstests (geladen über stress.substitutions)
+# Makros: P = PV-Präfix, N = Anzahl der Kanäle
+
+# Update-Rate aller Kanäle. Schreibt den SCAN-Index von TICKS:
+# 0 = Passive, 3 = 10 s, 5 = 2 s, 6 = 1 s, 7 = 0.5 s, 8 = 0.2 s, 9 = 0.1 s
+record(mbbo, "$(P)RATE") {
+    field(DESC, "Update-Rate aller Kanaele")
+    field(DTYP, "Raw Soft Channel")
+    field(OUT,  "$(P)TICKS.SCAN")
+    field(NOBT, "4")
+    field(ZRST, "Pause")
+    field(ZRVL, "0")
+    field(ONST, "0.1 Hz")
+    field(ONVL, "3")
+    field(TWST, "0.5 Hz")
+    field(TWVL, "5")
+    field(THST, "1 Hz")
+    field(THVL, "6")
+    field(FRST, "2 Hz")
+    field(FRVL, "7")
+    field(FVST, "5 Hz")
+    field(FVVL, "8")
+    field(SXST, "10 Hz")
+    field(SXVL, "9")
+    field(VAL,  "3")
+    field(PINI, "YES")
+}
+
+# Takt: zählt hoch und löst über das Event "stress" alle Kanäle in einem Durchlauf aus
+record(calc, "$(P)TICKS") {
+    field(DESC, "Takt-Zaehler")
+    field(INPA, "$(P)TICKS NPP")
+    field(CALC, "A+1")
+    field(FLNK, "$(P)TICK")
+}
+
+record(event, "$(P)TICK") {
+    field(DESC, "Loest alle Kanaele aus")
+    field(VAL,  "stress")
+}
+
+# Amplitude und Rauschen der Analogkanäle (schreibbar). Ab Amplitude 35 gibt es MINOR-, ab 45 MAJOR-Alarme.
+record(ao, "$(P)AMPL") {
+    field(DESC, "Amplitude der Analogkanaele")
+    field(VAL,  "30")
+    field(PINI, "YES")
+    field(DRVL, "0")
+    field(DRVH, "60")
+    field(LOPR, "0")
+    field(HOPR, "60")
+    field(PREC, "1")
+}
+
+record(ao, "$(P)NOISE") {
+    field(DESC, "Rauschen der Analogkanaele")
+    field(VAL,  "2")
+    field(PINI, "YES")
+    field(DRVL, "0")
+    field(DRVH, "20")
+    field(LOPR, "0")
+    field(HOPR, "20")
+    field(PREC, "1")
+}
+
+# Erzeugte Last: Anzahl Kanäle mal Rate (jeder Kanal sendet bei jedem Takt)
+record(calc, "$(P)LOAD") {
+    field(DESC, "Erzeugte Updates pro Sekunde")
+    field(INPA, "$(P)RATE CP")
+    field(INPB, "$(N)")
+    field(CALC, "B*(A=1?0.1:(A=2?0.5:(A=3?1:(A=4?2:(A=5?5:(A=6?10:0))))))")
+    field(PINI, "YES")
+    field(EGU,  "1/s")
+}
+
+record(longin, "$(P)COUNT") {
+    field(DESC, "Anzahl der Kanaele")
+    field(VAL,  "$(N)")
+    field(PINI, "YES")
+}

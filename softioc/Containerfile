@@ -1,0 +1,34 @@
+# Test-SoftIOC mit EPICS Base (CA und PVA), gebaut aus dem offiziellen GitHub-Repo.
+# Der Build dauert einige Minuten (EPICS Base wird kompiliert).
+
+FROM docker.io/library/debian:bookworm-slim AS build
+ARG EPICS_BASE_REF=R7.0.9
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential git perl libreadline-dev ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch "$EPICS_BASE_REF" --recurse-submodules --shallow-submodules \
+        https://github.com/epics-base/epics-base /src/base
+WORKDIR /src/base
+RUN make -j"$(nproc)" INSTALL_LOCATION=/opt/epics CROSS_COMPILER_TARGET_ARCHS= \
+    && rm -rf /opt/epics/include /opt/epics/html /opt/epics/lib/*/*.a
+
+FROM docker.io/library/debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends libreadline8 perl-base \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --system --home-dir /opt/softioc --shell /usr/sbin/nologin softioc
+COPY --from=build /opt/epics /opt/epics
+COPY test.db st.cmd stress.substitutions stress-*.template /opt/softioc/
+# Arbeitsverzeichnis beschreibbar machen (iocsh schreibt .iocsh_history)
+RUN chown softioc /opt/softioc
+
+# Architektur-Verzeichnis (z. B. linux-x86_64 oder linux-aarch64) automatisch ermitteln
+RUN arch="$(ls /opt/epics/bin)" \
+    && echo "/opt/epics/lib/$arch" > /etc/ld.so.conf.d/epics.conf && ldconfig \
+    && ln -s "/opt/epics/bin/$arch" /opt/epics/bin/current
+ENV PATH=/opt/epics/bin/current:$PATH
+
+USER softioc
+WORKDIR /opt/softioc
+# -S: ohne interaktive Shell, damit die IOC im Container weiterläuft.
+# CA: TCP/UDP 5064, PVA: TCP 5075, UDP 5076 (im Host-Netzwerk, kein EXPOSE nötig).
+CMD ["softIoc", "-S", "st.cmd"]

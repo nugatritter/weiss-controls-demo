@@ -1,0 +1,99 @@
+# WEISS für rootless Podman (podman compose / podman-compose).
+# Der Upstream-Code wird direkt aus Git gebaut, es ist keine lokale Kopie nötig.
+# Konfiguration: .env (Vorlage: .env.example)
+
+x-weiss-source: &weiss-source "https://github.com/weiss-controls/weiss.git#${WEISS_REF:-main}"
+
+services:
+  weiss:
+    build:
+      context: *weiss-source
+      target: prod
+      args:
+        VITE_DEMO_MODE: ${DEMO_MODE:-false}
+        VITE_AUTH_IDENTITY_PROVIDER: ${AUTH_IDENTITY_PROVIDER:-oauth}
+    image: localhost/weiss:${WEISS_TAG:-latest}
+    container_name: weiss
+    restart: unless-stopped
+    ports:
+      # Port 80 ist Pflicht: die API erlaubt per CORS nur http://APP_HOSTNAME ohne Port.
+      # Rootless braucht dafür net.ipv4.ip_unprivileged_port_start=80 (siehe README).
+      - "${HTTP_PORT:-80}:8081"
+    environment:
+      NODE_ENV: production
+      ENABLE_HTTPS: "false"
+      APP_HOSTNAME: ${APP_HOSTNAME:-localhost}
+    extra_hosts:
+      - "weiss-epicsws:host-gateway"
+    depends_on:
+      - weiss-api
+      - weiss-epicsws
+
+  weiss-epicsws:
+    build:
+      context: https://github.com/weiss-controls/weiss.git#${WEISS_REF:-main}:backend/epicsWS
+    image: localhost/weiss-epicsws:${WEISS_TAG:-latest}
+    container_name: weiss-epicsws
+    restart: unless-stopped
+    # Host-Netzwerk: nötig für Channel Access (UDP-Suche/Broadcast, TCP 5064).
+    # Funktioniert auch rootless. Der WebSocket-Dienst lauscht auf Host-Port 8080.
+    network_mode: host
+    environment:
+      EPICS_DEFAULT_PROTOCOL: ${EPICS_DEFAULT_PROTOCOL:-ca}
+      EPICS_CA_ADDR_LIST: ${EPICS_CA_ADDR_LIST:-localhost}
+      EPICS_CA_AUTO_ADDR_LIST: ${EPICS_CA_AUTO_ADDR_LIST:-YES}
+      EPICS_CA_MAX_ARRAY_BYTES: ${EPICS_CA_MAX_ARRAY_BYTES:-1000000}
+      EPICS_PVA_ADDR_LIST: ${EPICS_PVA_ADDR_LIST:-localhost}
+      EPICS_PVA_AUTO_ADDR_LIST: ${EPICS_PVA_AUTO_ADDR_LIST:-YES}
+      EPICS_MAX_UPDATE_RATE_HZ: ${EPICS_MAX_UPDATE_RATE_HZ:-30}
+      EPICS_MAX_CLIENT_QUEUE: ${EPICS_MAX_CLIENT_QUEUE:-1000}
+
+  # Optionale Test-SoftIOC mit Testvariablen WEISS:TEST:* (siehe README).
+  weiss-softioc:
+    build:
+      context: ./softioc
+      dockerfile: Containerfile
+    image: localhost/weiss-softioc:${WEISS_TAG:-latest}
+    container_name: weiss-softioc
+    restart: unless-stopped
+    network_mode: host
+
+  weiss-api:
+    build:
+      context: .
+      dockerfile: overrides/weiss-api-timeout.Containerfile
+      args:
+        BASE_IMAGE: localhost/weiss-api-upstream:${WEISS_TAG:-latest}
+        WEISS_GIT_TIMEOUT_SECONDS: ${WEISS_GIT_TIMEOUT_SECONDS:-180}
+    image: localhost/weiss-api:${WEISS_TAG:-latest}
+    container_name: weiss-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - storage:/app/storage
+      - ${ROLES_CONFIG_FILE:-./roles.toml}:/config/roles.toml:ro
+    environment:
+      DEMO_MODE: ${DEMO_MODE:-false}
+      AUTH_CLIENT_ID: ${AUTH_CLIENT_ID:-}
+      AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET:-}
+      AUTH_IDENTITY_PROVIDER: ${AUTH_IDENTITY_PROVIDER:-oauth}
+      AUTH_ISSUER: ${AUTH_ISSUER:-}
+      APP_HOSTNAME: ${APP_HOSTNAME:-localhost}
+      ENABLE_HTTPS: "false"
+      TECHNICAL_ACCOUNT_TOKEN: ${TECHNICAL_ACCOUNT_TOKEN:-}
+      TECHNICAL_ACCOUNT_USERNAME: ${TECHNICAL_ACCOUNT_USERNAME:-weiss-bot}
+      TECHNICAL_ACCOUNT_EMAIL: ${TECHNICAL_ACCOUNT_EMAIL:-weiss-bot@example.com}
+      ROLES_CONFIG_PATH: /config/roles.toml
+      WEISS_GIT_TIMEOUT_SECONDS: ${WEISS_GIT_TIMEOUT_SECONDS:-180}
+      HTTP_PROXY: ${HTTP_PROXY:-}
+      HTTPS_PROXY: ${HTTPS_PROXY:-}
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,::1,weiss,weiss-api,weiss-epicsws,host.containers.internal}
+      http_proxy: ${HTTP_PROXY:-}
+      https_proxy: ${HTTPS_PROXY:-}
+      no_proxy: ${NO_PROXY:-localhost,127.0.0.1,::1,weiss,weiss-api,weiss-epicsws,host.containers.internal}
+
+volumes:
+  storage:
+    # Gleiches Volume wie die Quadlet-Variante (weiss-storage.volume), damit Repos erhalten bleiben.
+    name: weiss-storage
